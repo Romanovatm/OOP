@@ -1,53 +1,15 @@
-# Проект по объектно-ориентированному программированию
+# OOP — каталог товаров
 
-Учебный Python-проект, демонстрирующий основы объектно-ориентированного программирования на примере товаров и категорий интернет-магазина.
+Учебный Python-проект, демонстрирующий основные принципы объектно-ориентированного программирования на примере товаров и категорий интернет-магазина.
 
-## Реализованные классы
+## Возможности
 
-### `Product`
-
-Класс описывает товар и хранит следующие данные:
-
-- `name` — название товара;
-- `description` — описание товара;
-- `price` — цена;
-- `quantity` — количество товара в наличии.
-
-Пример создания товара:
-
-```python
-from src.classes import Product
-
-product = Product(
-    name="Смартфон",
-    description="Смартфон с OLED-дисплеем",
-    price=79990.0,
-    quantity=5,
-)
-```
-
-### `Category`
-
-Класс описывает категорию товаров и хранит:
-
-- `name` — название категории;
-- `description` — описание категории;
-- `products` — список объектов `Product`;
-- `category_count` — общее количество созданных категорий;
-- `product_count` — общее количество товаров во всех созданных категориях.
-
-Пример создания категории:
-
-```python
-from src.classes import Category, Product
-
-product = Product("Смартфон", "Смартфон с OLED-дисплеем", 79990.0, 5)
-category = Category("Электроника", "Смартфоны и другая техника", [product])
-
-print(category.name)
-print(Category.category_count)
-print(Category.product_count)
-```
+- создание товаров и категорий;
+- создание товара из словаря;
+- изменение цены с проверкой корректности;
+- добавление товаров в категорию;
+- подсчёт созданных категорий и добавленных в них товаров;
+- получение форматированного списка товаров категории.
 
 ## Требования
 
@@ -56,11 +18,10 @@ print(Category.product_count)
 
 ## Установка
 
-Клонируйте репозиторий:
+Клонируйте репозиторий и перейдите в папку проекта:
 
 ```bash
-git clone https://github.com/Romanovatm/OOP.git 
-
+git clone https://github.com/Romanovatm/OOP.git
 cd OOP
 ```
 
@@ -70,41 +31,84 @@ cd OOP
 poetry install
 ```
 
-Poetry создаст виртуальное окружение и установит зависимости, зафиксированные в `poetry.lock`.
-
 ## Использование
 
-Классы можно импортировать из модуля `src.classes`:
+### Создание товара
+
+```python
+from src.classes import Product
+
+phone = Product(
+    name="Смартфон",
+    description="Смартфон с OLED-дисплеем",
+    price=79990.0,
+    quantity=5,
+)
+
+print(phone.name)
+print(phone.price)
+```
+
+Товар также можно создать из словаря с помощью классового метода `new_product`:
+
+```python
+product_data = {
+    "name": "Ноутбук",
+    "description": "Ноутбук для работы и учёбы",
+    "price": 99990,
+    "quantity": 3,
+}
+
+laptop = Product.new_product(product_data)
+```
+
+Цена хранится в приватном атрибуте и доступна через свойство `price`. При попытке установить нулевую или отрицательную цену текущее значение не изменится.
+
+```python
+laptop.price = 105000  # цена изменится
+laptop.price = 0       # цена не изменится
+```
+
+### Работа с категорией
 
 ```python
 from src.classes import Category, Product
 
-apple = Product("Яблоко", "Красное яблоко", 44.5, 10)
-fruits = Category("Фрукты", "Сезонные фрукты", [apple])
+phone = Product("Смартфон", "Смартфон с OLED-дисплеем", 79990.0, 5)
+category = Category(
+    name="Электроника",
+    description="Смартфоны, ноутбуки и другая техника",
+    products=[phone],
+)
 
-print(fruits.name)          # Фрукты
-print(fruits.products)      # список товаров категории
-print(Category.category_count)
-print(Category.product_count)
+headphones = Product("Наушники", "Беспроводные наушники", 12990.0, 10)
+category.add_product(headphones)
+
+print(category.products)
 ```
 
-Файл `main.py` оставлен пустым, поэтому проект используется через импорт классов или интерактивную консоль Python.
+Результат:
+
+```text
+Смартфон, 79990.0 руб. Остаток: 5 шт.
+Наушники, 12990.0 руб. Остаток: 10 шт.
+```
+
+Классовые атрибуты `Category.category_count` и `Category.product_count` содержат соответственно количество созданных категорий и общее количество товаров в них.
 
 ## Тестирование
 
-Запуск всех тестов:
+Запуск тестов:
 
 ```bash
 poetry run pytest
 ```
 
-Запуск тестов с измерением покрытия:
+Запуск тестов с отчётом о покрытии:
 
 ```bash
 poetry run pytest --cov=src --cov-report=term-missing
 ```
-
-Тесты проверяют корректность инициализации объектов `Product` и `Category`, а также работу счётчиков категорий и товаров.
 
 ## Проверка качества кода
 
@@ -117,7 +121,7 @@ poetry run flake8 src tests main.py
 poetry run mypy src main.py
 ```
 
-Для автоматического форматирования:
+Автоматическое форматирование:
 
 ```bash
 poetry run black .
@@ -130,15 +134,16 @@ poetry run isort .
 OOP/
 ├── src/
 │   ├── __init__.py
-│   └── classes.py          # классы Product и Category
+│   └── classes.py        # классы Product и Category
 ├── tests/
 │   ├── __init__.py
-│   └── test_classes.py     # тесты классов
-├── .flake8                 # настройки Flake8
+│   └── test_classes.py   # тесты
+├── .flake8               # настройки Flake8
 ├── .gitignore
-├── main.py                 # точка входа, пока не реализована
-├── poetry.lock             # зафиксированные версии зависимостей
-└── pyproject.toml          # метаданные и настройки проекта
+├── main.py
+├── poetry.lock
+├── pyproject.toml
+└── README.md
 ```
 
 ## Автор
