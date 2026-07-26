@@ -15,9 +15,11 @@ class Product:
         self.quantity = quantity
 
     def __str__(self) -> str:
+        """Метод возвращает текстовое представление объекта для пользователя."""
         return f"{self.name}, {self.price} руб. Остаток: {self.quantity} шт."
 
     def __add__(self, other: Product) -> float:
+        """Складывает сумму всех продуктов из списка товара"""
         result = self.quantity * self.price + other.quantity * other.price
         return result
 
@@ -69,6 +71,7 @@ class Category:
         Category.product_count += len(products)
 
     def __str__(self) -> str:
+        """Метод возвращает текстовое представление объекта для пользователя"""
         return f"{self.name}, количество продуктов: {sum(product.quantity for product in self.__products)} шт."
 
     def add_product(self, product: Product) -> None:
