@@ -9,6 +9,17 @@ def test_product():
     assert product.quantity == 10
 
 
+def test_product_str():
+    product = Product("яблоко", "красное", 44.5, 10)
+    assert str(product) == "яблоко, 44.5 руб. Остаток: 10 шт."
+
+
+def test_product_add():
+    product1 = Product("яблоко", "красное", 44.5, 10)
+    product2 = Product("апельсин", "красный", 120, 89)
+    assert product1 + product2 == 11125
+
+
 def test_new_product():
     dict_ = {"name": "апельсин", "description": "красный", "price": 99, "quantity": 5}
     product = Product.new_product(dict_)
@@ -54,3 +65,9 @@ def test_add_product():
     category.add_product(product2)
     assert category.products == "яблоко, 44.5 руб. Остаток: 10 шт.\nапельсин, 120 руб. Остаток: 89 шт.\n"
     assert Category.product_count == 2
+
+
+def test_category_str():
+    product = Product("яблоко", "красное", 44.5, 10)
+    category = Category("Фрукты", "Свежие фрукты", [product])
+    assert str(category) == "Фрукты, количество продуктов: 10 шт."
