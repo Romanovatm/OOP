@@ -1,4 +1,6 @@
-from src.classes import Category, Product
+import pytest
+
+from src.classes import Category, LawnGrass, Product, Smartphone
 
 
 def test_product():
@@ -17,7 +19,12 @@ def test_product_str():
 def test_product_add():
     product1 = Product("яблоко", "красное", 44.5, 10)
     product2 = Product("апельсин", "красный", 120, 89)
+    product3 = Smartphone(
+        "Samsung Galaxy S23 Ultra", "256GB, Серый цвет, 200MP камера", 180000.0, 5, 95.5, "S23 Ultra", 256, "Серый"
+    )
     assert product1 + product2 == 11125
+    with pytest.raises(TypeError):
+        product1 + product3
 
 
 def test_new_product():
@@ -66,8 +73,48 @@ def test_add_product():
     assert category.products == "яблоко, 44.5 руб. Остаток: 10 шт.\nапельсин, 120 руб. Остаток: 89 шт.\n"
     assert Category.product_count == 2
 
+    with pytest.raises(TypeError):
+        category.add_product("Hello World")
+
 
 def test_category_str():
     product = Product("яблоко", "красное", 44.5, 10)
     category = Category("Фрукты", "Свежие фрукты", [product])
     assert str(category) == "Фрукты, количество продуктов: 10 шт."
+
+
+def test_smartphone_from_product():
+
+    smartphone1 = Smartphone(
+        "Samsung Galaxy S23 Ultra", "256GB, Серый цвет, 200MP камера", 180000.0, 5, 95.5, "S23 Ultra", 256, "Серый"
+    )
+
+    assert smartphone1.efficiency == 95.5
+    assert smartphone1.model == "S23 Ultra"
+    assert smartphone1.memory == 256
+    assert smartphone1.color == "Серый"
+
+
+def test_smartphone_from_product_init():
+
+    smartphone1 = Smartphone(
+        "Samsung Galaxy S23 Ultra", "256GB, Серый цвет, 200MP камера", 180000.0, 5, 95.5, "S23 Ultra", 256, "Серый"
+    )
+
+    assert issubclass(type(smartphone1), Product)
+
+
+def test_lawngrass_from_product():
+
+    grass1 = LawnGrass("Газонная трава", "Элитная трава для газона", 500.0, 20, "Россия", "7 дней", "Зеленый")
+
+    assert grass1.country == "Россия"
+    assert grass1.germination_period == "7 дней"
+    assert grass1.color == "Зеленый"
+
+
+def test_lawngrass_from_product_init():
+
+    grass1 = LawnGrass("Газонная трава", "Элитная трава для газона", 500.0, 20, "Россия", "7 дней", "Зеленый")
+
+    assert issubclass(type(grass1), Product)
