@@ -20,7 +20,10 @@ class Product:
 
     def __add__(self, other: Product) -> float:
         """Складывает сумму всех продуктов из списка товара"""
-        result = self.quantity * self.price + other.quantity * other.price
+        if type(self) is type(other):
+            result = self.quantity * self.price + other.quantity * other.price
+        else:
+            raise TypeError
         return result
 
     @classmethod
@@ -50,6 +53,65 @@ class Product:
             self.__price = price
 
 
+class Smartphone(Product):
+    """Класс, описывающий категорию товаров: Smartphone"""
+
+    name: str
+    description: str
+    __price: float
+    quantity: int
+    efficiency: float
+    model: str
+    memory: int
+    color: str
+
+    def __init__(
+        self,
+        name: str,
+        description: str,
+        price: float,
+        quantity: int,
+        efficiency: float,
+        model: str,
+        memory: int,
+        color: str,
+    ) -> None:
+        """Метод для инициализации класса Smartphone, наследуемого от класса Product"""
+        super().__init__(name, description, price, quantity)
+        self.efficiency = efficiency
+        self.model = model
+        self.memory = memory
+        self.color = color
+
+
+class LawnGrass(Product):
+    """Класс, описывающий категорию товаров: LawnGrass"""
+
+    name: str
+    description: str
+    __price: float
+    quantity: int
+    country: str
+    germination_period: str
+    color: str
+
+    def __init__(
+        self,
+        name: str,
+        description: str,
+        price: float,
+        quantity: int,
+        country: str,
+        germination_period: str,
+        color: str,
+    ) -> None:
+        """Метод для инициализации класса LawnGrass, наследуемого от класса Product"""
+        super().__init__(name, description, price, quantity)
+        self.country = country
+        self.germination_period = germination_period
+        self.color = color
+
+
 class Category:
     """Класс, описывающий категорию"""
 
@@ -76,8 +138,11 @@ class Category:
 
     def add_product(self, product: Product) -> None:
         """Метод для добавления продукта в список товаров"""
-        self.__products.append(product)
-        Category.product_count += 1
+        if isinstance(product, Product) or issubclass(type(product), Product):
+            self.__products.append(product)
+            Category.product_count += 1
+        else:
+            raise TypeError
 
     @property
     def products(self) -> str:
