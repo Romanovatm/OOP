@@ -1,4 +1,26 @@
-class Product:
+from abc import ABC, abstractmethod
+
+
+class BaseProduct(ABC):
+    """Базовый класс (шаблон) для создания продуктов"""
+
+    @abstractmethod
+    def __init__(self) -> None:
+        super().__init__()
+
+
+class MixinInit:
+    """Класс-миксин, который будет при создании объекта, то есть при работе метода __init__ печатает
+     в консоль информацию о том, от какого класса и с какими параметрами был создан объект"""
+
+    def __init__(self) -> None:
+        print(repr(self))
+
+    def __repr__(self) -> str:
+        return f"{self.__class__.__name__}({self.name}, {self.description}, {self.price}, {self.quantity})"  # type: ignore
+
+
+class Product(BaseProduct, MixinInit):
     """Класс, описывающий продукт"""
 
     name: str
@@ -8,11 +30,11 @@ class Product:
 
     def __init__(self, name: str, description: str, price: float, quantity: int) -> None:
         """Метод для инициализации класса Product"""
-
         self.name = name
         self.description = description
         self.__price = price
         self.quantity = quantity
+        super().__init__()
 
     def __str__(self) -> str:
         """Метод возвращает текстовое представление объекта для пользователя."""
@@ -28,10 +50,9 @@ class Product:
 
     @classmethod
     def new_product(cls, info: dict) -> Product:
-        """
-        Класс-метод, который принимает на вход параметры товара в словаре и возвращает объект
-        класса Product
-        """
+        """Класс-метод, который принимает на вход параметры товара в словаре и возвращает объект
+        класса Product"""
+
         return cls(
             name=str(info.get("name", "")),
             description=str(info.get("description", "")),
@@ -42,11 +63,13 @@ class Product:
     @property
     def price(self) -> float:
         """Геттер для получения значения цены"""
+
         return self.__price
 
     @price.setter
     def price(self, price: float) -> None:
         """Сеттер для проверки корректной цены товара"""
+
         if price <= 0:
             print("Цена не должна быть нулевая или отрицательная")
         else:
@@ -77,6 +100,7 @@ class Smartphone(Product):
         color: str,
     ) -> None:
         """Метод для инициализации класса Smartphone, наследуемого от класса Product"""
+
         super().__init__(name, description, price, quantity)
         self.efficiency = efficiency
         self.model = model
@@ -106,6 +130,7 @@ class LawnGrass(Product):
         color: str,
     ) -> None:
         """Метод для инициализации класса LawnGrass, наследуемого от класса Product"""
+
         super().__init__(name, description, price, quantity)
         self.country = country
         self.germination_period = germination_period
@@ -134,10 +159,12 @@ class Category:
 
     def __str__(self) -> str:
         """Метод возвращает текстовое представление объекта для пользователя"""
+
         return f"{self.name}, количество продуктов: {sum(product.quantity for product in self.__products)} шт."
 
     def add_product(self, product: Product) -> None:
         """Метод для добавления продукта в список товаров"""
+
         if isinstance(product, Product) or issubclass(type(product), Product):
             self.__products.append(product)
             Category.product_count += 1
@@ -147,4 +174,5 @@ class Category:
     @property
     def products(self) -> str:
         """Геттер для получения списка товаров в категории"""
+
         return "".join(f"{str(product)}\n" for product in self.__products)
