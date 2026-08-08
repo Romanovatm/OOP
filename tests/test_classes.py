@@ -3,8 +3,10 @@ import pytest
 from src.classes import Category, LawnGrass, Product, Smartphone
 
 
-def test_product():
+def test_product(capsys):
     product = Product("яблоко", "красное", 44.5, 10)
+    message = capsys.readouterr()
+    assert message.out == "Product(яблоко, красное, 44.5, 10)\n"
     assert product.name == "яблоко"
     assert product.description == "красное"
     assert product.price == 44.5
