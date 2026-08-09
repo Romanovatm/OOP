@@ -10,8 +10,8 @@ class BaseProduct(ABC):
 
 
 class MixinInit:
-    """Класс-миксин, который будет при создании объекта, то есть при работе метода __init__ печатает
-     в консоль информацию о том, от какого класса и с какими параметрами был создан объект"""
+    """Класс-миксин, который при создании объекта, то есть при работе метода __init__ печатает
+    в консоль информацию о том, от какого класса и с какими параметрами был создан объект"""
 
     def __init__(self) -> None:
         print(repr(self))
@@ -33,7 +33,10 @@ class Product(BaseProduct, MixinInit):
         self.name = name
         self.description = description
         self.__price = price
-        self.quantity = quantity
+        if quantity > 0:
+            self.quantity = quantity
+        else:
+            raise ValueError("Товар с нулевым количеством не может быть добавлен")
         super().__init__()
 
     def __str__(self) -> str:
@@ -176,3 +179,10 @@ class Category:
         """Геттер для получения списка товаров в категории"""
 
         return "".join(f"{str(product)}\n" for product in self.__products)
+
+    def middle_price(self) -> float:
+        """Метод подсчитывает средний ценник всех товаров"""
+        try:
+            return sum(product.price for product in self.__products) / len(self.__products)
+        except ZeroDivisionError:
+            return 0
